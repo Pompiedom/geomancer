@@ -1,0 +1,13 @@
+[package]
+name = "geomancer-rosette"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde_json.workspace = true
+geomancer-common.workspace = true

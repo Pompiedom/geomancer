@@ -1,0 +1,10 @@
+[package]
+name = "geomancer-common"
+description = "Shared ABI glue and geometry for the Geomancer VectorCraft plug-ins"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+serde_json.workspace = true
