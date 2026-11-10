@@ -133,9 +133,14 @@ pub fn placement(input: &Value, params: &Value) -> P {
     r.map(centre).unwrap_or((0.0, 0.0))
 }
 
-/// A generator's output: every selected object kept as it is, and the new path above them.
-pub fn generated(input: &Value, name: &str, subpaths: Vec<Value>, fill: bool) -> Value {
-    let mut objects: Vec<Value> = input["objects"].as_array().into_iter().flatten().filter_map(|o| o.get("id")).map(|id| json!({"id": id})).collect();
+/// An open or closed subpath of corner anchors through `points`.
+pub fn polyline(points: &[P], closed: bool) -> Value {
+    let anchors: Vec<Value> = points.iter().map(|p| json!({"p": [p.0, p.1]})).collect();
+    json!({"closed": closed, "anchors": anchors})
+}
+
+/// A new path named `name`: a 1 pt black stroke, or with `fill` a black fill and no stroke.
+pub fn shape(name: &str, subpaths: Vec<Value>, fill: bool) -> Value {
     let black = json!({"type": "solid", "color": {"model": "gray", "k": 1}});
     let mut shape = json!({
         "type": "path",
@@ -148,6 +153,12 @@ pub fn generated(input: &Value, name: &str, subpaths: Vec<Value>, fill: bool) ->
         shape["fills"] = json!([black]);
         shape["strokes"] = json!([]);
     }
-    objects.push(shape);
+    shape
+}
+
+/// A generator's output: every selected object kept as it is, and the new shapes above them.
+pub fn generated(input: &Value, shapes: Vec<Value>) -> Value {
+    let mut objects: Vec<Value> = input["objects"].as_array().into_iter().flatten().filter_map(|o| o.get("id")).map(|id| json!({"id": id})).collect();
+    objects.extend(shapes);
     json!({"objects": objects})
 }

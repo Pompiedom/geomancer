@@ -8,16 +8,18 @@ use std::f64::consts::TAU;
 const MANIFEST: &str = r#"{
   "id": "io.github.pompiedom.geomancer.rosette",
   "name": "Rosette",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "effect",
   "author": "Marco (Pompiedom)",
   "description": "Repeats the object around a centre point. Mirror adds a reflected copy between each pair (dihedral symmetry).",
   "params": {
     "copies": {"type": "int", "min": 1, "max": 360, "default": 6},
-    "mirror": {"type": "bool", "default": false},
-    "centre": {"type": "choice", "options": ["bottom", "top", "left", "right", "middle"], "default": "bottom"},
-    "offsetX": {"type": "number", "min": -10000, "max": 10000, "default": 0},
-    "offsetY": {"type": "number", "min": -10000, "max": 10000, "default": 0}
+    "mirror": {"type": "bool", "default": false,
+               "help": "Adds a reflected copy between each pair of copies, for mirror symmetry (dihedral) instead of rotation alone (cyclic)."},
+    "centre": {"type": "choice", "options": ["bottom", "top", "left", "right", "middle"], "default": "bottom",
+               "help": "The point of the object's bounds the copies turn around."},
+    "offsetX": {"type": "number", "min": -10000, "max": 10000, "default": 0, "unit": "pt", "label": "Centre offset X"},
+    "offsetY": {"type": "number", "min": -10000, "max": 10000, "default": 0, "unit": "pt", "label": "Centre offset Y"}
   }
 }"#;
 

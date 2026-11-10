@@ -1,5 +1,5 @@
 [package]
-name = "geomancer-rose"
+name = "geomancer-generators"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

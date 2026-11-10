@@ -4,7 +4,6 @@ set -e
 cd "$(dirname "$0")"
 export PATH="/opt/homebrew/opt/rustup/bin:$HOME/.cargo/bin:$PATH"
 cargo build --release --target wasm32-unknown-unknown
-for p in spiral rose rosette; do
-  cp "target/wasm32-unknown-unknown/release/geomancer_$p.wasm" "dist/geomancer-$p.wasm"
-done
+cp target/wasm32-unknown-unknown/release/geomancer_generators.wasm dist/geomancer.wasm
+cp target/wasm32-unknown-unknown/release/geomancer_rosette.wasm dist/geomancer-rosette.wasm
 ls -l dist

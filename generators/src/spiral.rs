@@ -1,29 +1,25 @@
-//! Spiral: an object filter that adds an Archimedean spiral or a two-armed Fermat spiral, centred on the selection
-//! (or the artboard when nothing is selected).
+//! Spiral: an Archimedean spiral, or a two-armed Fermat spiral (an S through the centre).
 
-use geomancer_common::{P, Value, choice, curve, flag, generated, num, placement, plugin};
+use crate::Shape;
+use geomancer_common::{P, Value, choice, curve, flag, num, placement, shape};
 use std::f64::consts::TAU;
 
-const MANIFEST: &str = r#"{
-  "id": "io.github.pompiedom.geomancer.spiral",
-  "name": "Spiral",
-  "version": "0.1.0",
-  "kind": "filter",
-  "author": "Marco (Pompiedom)",
-  "description": "Adds an Archimedean spiral, or with Fermat a two-armed Fermat spiral (an S through the centre), at the centre of the selection, or of the artboard when nothing is selected.",
-  "params": {
-    "innerRadius": {"type": "number", "min": 0, "max": 5000, "default": 0},
-    "outerRadius": {"type": "number", "min": 1, "max": 5000, "default": 100},
-    "turns": {"type": "number", "min": 0.25, "max": 100, "default": 5},
-    "fermat": {"type": "bool", "default": false},
-    "direction": {"type": "choice", "options": ["clockwise", "counterclockwise"], "default": "clockwise"},
-    "startAngle": {"type": "number", "min": -360, "max": 360, "default": 0}
-  }
-}"#;
+pub const SHAPE: Shape = Shape {
+    id: "spiral",
+    label: "Spiral",
+    params: r#"{
+      "innerRadius": {"type": "number", "min": 0, "max": 5000, "default": 0, "unit": "pt", "label": "Inner radius"},
+      "outerRadius": {"type": "number", "min": 1, "max": 5000, "default": 100, "unit": "pt", "label": "Outer radius"},
+      "turns": {"type": "number", "min": 0.25, "max": 100, "default": 5},
+      "fermat": {"type": "bool", "default": false, "label": "Fermat",
+                 "help": "A two-armed Fermat spiral (r = ±√θ), an S through the centre, instead of an Archimedean one. With an inner radius the S is cut out of the middle."},
+      "direction": {"type": "choice", "options": ["clockwise", "counterclockwise"], "default": "clockwise"},
+      "startAngle": {"type": "number", "min": -360, "max": 360, "default": 0, "unit": "°", "label": "Start angle"}
+    }"#,
+    run,
+};
 
-plugin!(MANIFEST, run);
-
-fn run(input: &Value, params: &Value) -> Result<Value, String> {
+fn run(input: &Value, params: &Value) -> Result<Vec<Value>, String> {
     let r_in = num(params, "innerRadius", 0.0).max(0.0);
     let r_out = num(params, "outerRadius", 100.0);
     let turns = num(params, "turns", 5.0);
@@ -59,5 +55,5 @@ fn run(input: &Value, params: &Value) -> Result<Value, String> {
         let segments = ((12.0 * turns).ceil() as usize).max(4);
         vec![curve(|t| at(r_in + (r_out - r_in) * t / span, t), 0.0, span, segments, false)]
     };
-    Ok(generated(input, "Spiral", paths, false))
+    Ok(vec![shape("Spiral", paths, false)])
 }
